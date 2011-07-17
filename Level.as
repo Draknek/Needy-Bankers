@@ -6,21 +6,23 @@ package
 	import net.flashpunk.utils.*;
 	
 	import flash.display.*;
+	import flash.geom.*;
 	
 	public class Level extends World
 	{
 		//[Embed(source="images/bg.png")] public static const BgGfx: Class;
 		
-		public static const TILES_X:int = 20;
-		public static const TILES_Y:int = 15;
+		public static const TILES_X:int = 15;
+		public static const TILES_Y:int = 12;
 		
 		public var dragging:Gem;
+		public var dragPoint:Point = new Point;
 		
 		public function Level ()
 		{
 			var tmp:BitmapData = new BitmapData(TILES_X, TILES_Y, false, 0);
 			
-			for (var i:int = 0; i < 400; i++) {
+			for (var i:int = 0; i < 200; i++) {
 				do {
 					var x:int = FP.rand(TILES_X);
 					var y:int = FP.rand(TILES_Y);
@@ -39,9 +41,13 @@ package
 		{
 			if (Input.mousePressed || (! dragging && Input.mouseDown)) {
 				dragging = collidePoint("gem", mouseX, mouseY) as Gem;
+				if (dragging) {
+					dragPoint.x = coord(mouseX - dragging.x, 100);
+					dragPoint.y = coord(mouseY - dragging.y, 100);
+				}
 			} else if (dragging) {
-				var dx:int = coordX(mouseX) - dragging.x;
-				var dy:int = coordY(mouseY) - dragging.y;
+				var dx:int = coord(mouseX - dragPoint.x, TILES_X - dragging.width/Gem.SIZE + 1) - dragging.x;
+				var dy:int = coord(mouseY - dragPoint.y, TILES_Y - dragging.height/Gem.SIZE + 1) - dragging.y;
 				
 				dx = FP.clamp(dx, -1, 1) * Gem.SIZE;
 				dy = FP.clamp(dy, -1, 1) * Gem.SIZE;

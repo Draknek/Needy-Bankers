@@ -6,9 +6,9 @@ package
 	{
 		public function Main () 
 		{
-			super(141, 106, 60, true);
+			super(106, 85, 60, true);
 			
-			FP.screen.scale = 4;
+			FP.screen.scale = 5;
 			
 			FP.world = new Level();
 			FP.console.enable();
