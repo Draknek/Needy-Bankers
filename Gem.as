@@ -110,13 +110,23 @@ package
 					}
 				}
 				
-				graphic = new Stamp(data);
+				graphic = new Image(data);
 			}
 		}
 		
 		public override function update (): void
 		{
+			var level:Level = world as Level;
+			var image:Image = graphic as Image;
 			
+			if (level.dragging == this || level.hovering == this) {
+				//image.tintMode = Image.TINTING_COLORIZE;
+				//image.tinting = 0.2;
+				image.color = 0xBBBBBB;
+			} else {
+				//image.tintMode = Image.TINTING_MULTIPLY;
+				image.color = 0xFFFFFF;
+			}
 		}
 	}
 }

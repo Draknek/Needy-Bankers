@@ -15,6 +15,7 @@ package
 		public static const TILES_X:int = 15;
 		public static const TILES_Y:int = 12;
 		
+		public var hovering:Gem;
 		public var dragging:Gem;
 		public var dragPoint:Point = new Point;
 		
@@ -39,8 +40,12 @@ package
 		
 		public override function update (): void
 		{
+			Input.mouseCursor = "auto";
+			
+			hovering = collidePoint("gem", mouseX, mouseY) as Gem;
+			
 			if (Input.mousePressed || (! dragging && Input.mouseDown)) {
-				dragging = collidePoint("gem", mouseX, mouseY) as Gem;
+				dragging = hovering;
 				if (dragging) {
 					dragPoint.x = coord(mouseX - dragging.x, 100);
 					dragPoint.y = coord(mouseY - dragging.y, 100);
@@ -58,6 +63,12 @@ package
 					dragging = null;
 				} 
 			}
+			
+			if (dragging) {
+				hovering = null;
+			}
+			
+			if (hovering || dragging) Input.mouseCursor = "hand";
 			
 			doCombine();
 			
