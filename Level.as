@@ -11,8 +11,8 @@ package
 	{
 		//[Embed(source="images/bg.png")] public static const BgGfx: Class;
 		
-		public static const TILES_X:int = 25;
-		public static const TILES_Y:int = 20;
+		public static const TILES_X:int = 20;
+		public static const TILES_Y:int = 15;
 		
 		public var dragging:Gem;
 		
@@ -33,15 +33,12 @@ package
 					break;
 				} while (false);
 			}
-			//add(new Player());
 		}
 		
 		public override function update (): void
 		{
-			if (Input.mousePressed) {
+			if (Input.mousePressed || (! dragging && Input.mouseDown)) {
 				dragging = collidePoint("gem", mouseX, mouseY) as Gem;
-			} else if (Input.mouseReleased) {
-				dragging = null;
 			} else if (dragging) {
 				var dx:int = coordX(mouseX) - dragging.x;
 				var dy:int = coordY(mouseY) - dragging.y;
@@ -50,9 +47,83 @@ package
 				dy = FP.clamp(dy, -1, 1) * Gem.SIZE;
 				
 				dragging.moveBy(dx, dy, "gem", true);
+				
+				if (Input.mouseReleased) {
+					dragging = null;
+				} 
 			}
+			
+			doCombine();
+			
 			super.update();
 		}
+		
+		public function doCombine ():void
+		{
+			var gem:Gem, gem2:Gem;
+			var x2:int, y2:int;
+			
+			var gems:Array = [];
+			
+			getType("gem", gems);
+			
+			for each (gem in gems) {
+				if (gem == dragging) continue;
+				
+				x2 = gem.x + gem.width + 1;
+				y2 = gem.y + 1;
+			
+				gem2 = collidePoint("gem", x2, y2) as Gem;
+				
+				if (gem2 && gem2 != dragging && gem.height == gem2.height && gem.colorID == gem2.colorID) {
+					remove(gem2);
+					gem.width += gem2.width;
+					gem.makeGraphic();
+				}
+			}
+			
+			updateLists();
+			
+			gems.length = 0;
+			
+			getType("gem", gems);
+			
+			for each (gem in gems) {
+				if (gem == dragging) continue;
+				
+				x2 = gem.x + 1;
+				y2 = gem.y + gem.height + 1;
+			
+				gem2 = collidePoint("gem", x2, y2) as Gem;
+				
+				if (gem2 && gem2 != dragging && gem.width == gem2.width && gem.colorID == gem2.colorID) {
+					remove(gem2);
+					gem.height += gem2.height;
+					gem.makeGraphic();
+				}
+			}
+		}
+		
+		/*public function checkRectangle (ix:int, iy:int, ix2:int, ix2:int):int
+		{
+			var color:int = -1;
+			
+			for (; ix <= ix2; ix++) {
+				for (; iy <= iy2; iy++) {
+					var gem:gem = collidePoint(ix*Gem.SIZE + 1, iy*Gem.SIZE + 1, "gem") as Gem;
+					
+					if (! gem) return -1;
+					
+					if (color >= 0) {
+						if (gem.colorID != color) return -1;
+					} else {
+						color = gem.colorID;
+					}
+				}
+			}
+			
+			return color;
+		}*/
 		
 		public static function coordX(xy:Number):int
 		{

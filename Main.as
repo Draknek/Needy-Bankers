@@ -2,12 +2,14 @@ package
 {
 	import net.flashpunk.*;
 	
-	[SWF(width = "600", height = "480", backgroundColor="#000000")]
 	public class Main extends Engine
 	{
 		public function Main () 
 		{
-			super(600, 480, 60, true);
+			super(141, 106, 60, true);
+			
+			FP.screen.scale = 4;
+			
 			FP.world = new Level();
 			FP.console.enable();
 		}
