@@ -158,6 +158,8 @@ package
 			
 			var gems:Array = [];
 			
+			updateLists();
+			
 			do {
 				var merged:int = 0;
 				
@@ -170,7 +172,7 @@ package
 				
 					x2 = gem.x + gem.width + 1;
 					y2 = gem.y + 1;
-			
+					
 					gem2 = collidePoint("gem", x2, y2) as Gem;
 				
 					if (gem2 && gem2 != dragging && gem.height == gem2.height && gem.colorID == gem2.colorID && gem.y == gem2.y) {
@@ -193,7 +195,7 @@ package
 				
 					x2 = gem.x + 1;
 					y2 = gem.y + gem.height + 1;
-			
+					
 					gem2 = collidePoint("gem", x2, y2) as Gem;
 				
 					if (gem2 && gem2 != dragging && gem.width == gem2.width && gem.colorID == gem2.colorID && gem.x == gem2.x) {

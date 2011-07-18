@@ -18,7 +18,7 @@ package
 			
 			setHitbox(Gem.SIZE, Gem.SIZE);
 			
-			graphic = Image.createRect(width+1, height+1, 0xFFFFFF);
+			graphic = Image.createRect(width+1, height+1, 0xA7A7A7);
 		}
 	}
 }
