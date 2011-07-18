@@ -19,23 +19,37 @@ package
 		public var dragging:Gem;
 		public var dragPoint:Point = new Point;
 		
-		public function Level ()
-		{
-			var tmp:BitmapData = new BitmapData(TILES_X, TILES_Y, false, 0);
-			
-			for (var i:int = 0; i < 200; i++) {
-				do {
-					var x:int = FP.rand(TILES_X);
-					var y:int = FP.rand(TILES_Y);
-					
-					if (tmp.getPixel(x, y)) continue;
+		public var data:BitmapData;
 				
-					tmp.setPixel(x, y, 1);
-					add(new Gem(x, y));
+		public function Level (_data:BitmapData = null)
+		{
+			if (_data) {
+				data = _data;
+			} else {
+				data = new BitmapData(TILES_X, TILES_Y, false, 0);
+			
+				for (var i:int = 0; i < 100; i++) {
+					do {
+						var x:int = FP.rand(TILES_X);
+						var y:int = FP.rand(TILES_Y);
 					
-					break;
-				} while (false);
+						if (data.getPixel(x, y)) continue;
+				
+						data.setPixel(x, y, FP.rand(3)+1);
+					
+						break;
+					} while (true);
+				}
 			}
+			
+			for (x = 0; x < data.width; x++) {
+				for (y = 0; y < data.height; y++) {
+					var id:int = data.getPixel(x, y);
+					
+					if (id) add(new Gem(x, y, 1, 1, id));
+				}
+			}
+			
 		}
 		
 		public override function update (): void

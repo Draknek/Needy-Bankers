@@ -16,9 +16,7 @@ package
 		
 		public var colorID:int;
 		
-		public static const COLORS:Array = ["green", "red", "blue"];
-		
-		public function Gem (_x:int = 0, _y:int = 0, width:int = 1, height:int = 1, _color:int = -1)
+		public function Gem (_x:int = 0, _y:int = 0, width:int = 1, height:int = 1, _color:int = 0)
 		{
 			x = _x * SIZE;
 			y = _y * SIZE;
@@ -27,8 +25,8 @@ package
 			
 			setHitbox(SIZE*width, SIZE*height);
 			
-			if (_color >= 0) {
-				colorID = _color;
+			if (_color) {
+				colorID = _color - 1;
 			} else {
 				colorID = FP.rand(3);
 			}
