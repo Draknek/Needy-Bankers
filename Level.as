@@ -34,8 +34,8 @@ package
 						var y:int = FP.rand(TILES_Y);
 					
 						if (data.getPixel(x, y)) continue;
-				
-						data.setPixel(x, y, FP.rand(3)+1);
+						
+						data.setPixel(x, y, FP.choose(1, 2, 3, 5));
 					
 						break;
 					} while (true);
@@ -46,7 +46,8 @@ package
 				for (y = 0; y < data.height; y++) {
 					var id:int = data.getPixel(x, y);
 					
-					if (id) add(new Gem(x, y, 1, 1, id));
+					if (id == 5) add(new Wall(x,y));
+					else if (id) add(new Gem(x, y, 1, 1, id));
 				}
 			}
 			
@@ -78,7 +79,7 @@ package
 				dx = FP.clamp(dx, -1, 1) * Gem.SIZE;
 				dy = FP.clamp(dy, -1, 1) * Gem.SIZE;
 				
-				dragging.moveBy(dx, dy, "gem", true);
+				dragging.moveBy(dx, dy, ["gem","solid","target"], true);
 				
 				if (Input.mouseReleased) {
 					dragging = null;
