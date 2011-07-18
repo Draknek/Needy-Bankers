@@ -50,10 +50,17 @@ package
 				}
 			}
 			
+			doCombine();
+			
 		}
 		
 		public override function update (): void
 		{
+			if (Input.pressed(Key.R)) {
+				FP.world = new Level(data);
+				return;
+			}
+			
 			Input.mouseCursor = "auto";
 			
 			hovering = collidePoint("gem", mouseX, mouseY) as Gem;
@@ -96,47 +103,55 @@ package
 			
 			var gems:Array = [];
 			
-			getType("gem", gems);
-			
-			for each (gem in gems) {
-				if (gem == dragging || ! gem.width) continue;
+			do {
+				var merged:int = 0;
 				
-				x2 = gem.x + gem.width + 1;
-				y2 = gem.y + 1;
+				gems.length = 0;
 			
-				gem2 = collidePoint("gem", x2, y2) as Gem;
+				getType("gem", gems);
+			
+				for each (gem in gems) {
+					if (gem == dragging || ! gem.width) continue;
 				
-				if (gem2 && gem2 != dragging && gem.height == gem2.height && gem.colorID == gem2.colorID && gem.y == gem2.y) {
-					remove(gem2);
-					gem.width += gem2.width;
-					gem2.width = 0;
-					gem.makeGraphic();
+					x2 = gem.x + gem.width + 1;
+					y2 = gem.y + 1;
+			
+					gem2 = collidePoint("gem", x2, y2) as Gem;
+				
+					if (gem2 && gem2 != dragging && gem.height == gem2.height && gem.colorID == gem2.colorID && gem.y == gem2.y) {
+						remove(gem2);
+						gem.width += gem2.width;
+						gem2.width = 0;
+						gem.makeGraphic();
+						merged++;
+					}
 				}
-			}
 			
-			updateLists();
+				updateLists();
 			
-			gems.length = 0;
+				gems.length = 0;
 			
-			getType("gem", gems);
+				getType("gem", gems);
 			
-			for each (gem in gems) {
-				if (gem == dragging || ! gem.width) continue;
+				for each (gem in gems) {
+					if (gem == dragging || ! gem.width) continue;
 				
-				x2 = gem.x + 1;
-				y2 = gem.y + gem.height + 1;
+					x2 = gem.x + 1;
+					y2 = gem.y + gem.height + 1;
 			
-				gem2 = collidePoint("gem", x2, y2) as Gem;
+					gem2 = collidePoint("gem", x2, y2) as Gem;
 				
-				if (gem2 && gem2 != dragging && gem.width == gem2.width && gem.colorID == gem2.colorID && gem.x == gem2.x) {
-					remove(gem2);
-					gem.height += gem2.height;
-					gem2.width = 0;
-					gem.makeGraphic();
+					if (gem2 && gem2 != dragging && gem.width == gem2.width && gem.colorID == gem2.colorID && gem.x == gem2.x) {
+						remove(gem2);
+						gem.height += gem2.height;
+						gem2.width = 0;
+						gem.makeGraphic();
+						merged++;
+					}
 				}
-			}
 			
-			updateLists();
+				updateLists();
+			} while (merged > 0)
 		}
 		
 		public static function coordX(xy:Number):int
