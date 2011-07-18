@@ -20,6 +20,9 @@ package
 		public var dragPoint:Point = new Point;
 		
 		public var data:BitmapData;
+		
+		public var editMode:Boolean = false;
+		public static var paint:int = 0;
 				
 		public function Level (_data:BitmapData = null)
 		{
@@ -42,6 +45,16 @@ package
 				}
 			}
 			
+			reloadState();
+		}
+		
+		private function reloadState ():void
+		{
+			removeAll();
+			
+			updateLists();
+			
+			var x:int, y:int;
 			for (x = 0; x < data.width; x++) {
 				for (y = 0; y < data.height; y++) {
 					var id:int = data.getPixel(x, y);
@@ -52,7 +65,6 @@ package
 			}
 			
 			doCombine();
-			
 		}
 		
 		public override function update (): void
@@ -62,39 +74,81 @@ package
 				return;
 			}
 			
+			if (Input.pressed(Key.E)) {
+				if (editMode) {
+					editMode = false;
+				} else {
+					var newLevel:Level = new Level(data);
+				
+					newLevel.editMode = true;
+				
+					FP.world = newLevel;
+				}
+				
+				return;
+			}
+			
 			Input.mouseCursor = "auto";
 			
-			hovering = collidePoint("gem", mouseX, mouseY) as Gem;
-			
-			if (Input.mousePressed || (! dragging && Input.mouseDown)) {
-				dragging = hovering;
-				if (dragging) {
-					dragPoint.x = coord(mouseX - dragging.x, 100);
-					dragPoint.y = coord(mouseY - dragging.y, 100);
-				}
-			} else if (dragging) {
-				var dx:int = coord(mouseX - dragPoint.x, TILES_X - dragging.width/Gem.SIZE + 1) - dragging.x;
-				var dy:int = coord(mouseY - dragPoint.y, TILES_Y - dragging.height/Gem.SIZE + 1) - dragging.y;
-				
-				dx = FP.clamp(dx, -1, 1) * Gem.SIZE;
-				dy = FP.clamp(dy, -1, 1) * Gem.SIZE;
-				
-				dragging.moveBy(dx, dy, ["gem","solid","target"], true);
-				
-				if (Input.mouseReleased) {
-					dragging = null;
-				} 
-			}
-			
-			if (dragging) {
+			if (editMode) {
 				hovering = null;
+				dragging = null;
+				
+				if (Input.pressed(Key.C)) {
+					data.fillRect(data.rect, 0);
+					reloadState();
+				}
+				
+				for (var i:int = 0; i < 10; i++) {
+					if (Input.pressed(Key.DIGIT_0 + i)) {
+						paint = i;
+					}
+				}
+				
+				if (Input.mouseDown) {
+					var mx:int = mouseX / Gem.SIZE;
+					var my:int = mouseY / Gem.SIZE;
+					
+					var id:int = data.getPixel(mx, my);
+					
+					if (id != paint) {
+						data.setPixel(mx, my, paint);
+						
+						reloadState();
+					}
+				}
+			} else {
+				hovering = collidePoint("gem", mouseX, mouseY) as Gem;
+			
+				if (Input.mousePressed || (! dragging && Input.mouseDown)) {
+					dragging = hovering;
+					if (dragging) {
+						dragPoint.x = coord(mouseX - dragging.x);
+						dragPoint.y = coord(mouseY - dragging.y);
+					}
+				} else if (dragging) {
+					var dx:int = coord(mouseX - dragPoint.x, TILES_X - dragging.width/Gem.SIZE + 1) - dragging.x;
+					var dy:int = coord(mouseY - dragPoint.y, TILES_Y - dragging.height/Gem.SIZE + 1) - dragging.y;
+				
+					dx = FP.clamp(dx, -1, 1) * Gem.SIZE;
+					dy = FP.clamp(dy, -1, 1) * Gem.SIZE;
+				
+					dragging.moveBy(dx, dy, ["gem","solid","target"], true);
+				
+					if (Input.mouseReleased) {
+						dragging = null;
+						doCombine();
+					} 
+				}
+			
+				if (dragging) {
+					hovering = null;
+				}
+			
+				if (hovering || dragging) Input.mouseCursor = "hand";
+				
+				super.update();
 			}
-			
-			if (hovering || dragging) Input.mouseCursor = "hand";
-			
-			doCombine();
-			
-			super.update();
 		}
 		
 		public function doCombine ():void
@@ -155,17 +209,7 @@ package
 			} while (merged > 0)
 		}
 		
-		public static function coordX(xy:Number):int
-		{
-			return coord(xy, TILES_X);
-		}
-		
-		public static function coordY(xy:Number):int
-		{
-			return coord(xy, TILES_Y);
-		}
-		
-		public static function coord(xy:Number, max:int):int
+		public static function coord(xy:Number, max:int = 100):int
 		{
 			var tile:int = int(xy / Gem.SIZE);
 			
