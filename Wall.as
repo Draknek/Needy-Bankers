@@ -9,7 +9,7 @@ package
 	
 	public class Wall extends Entity
 	{
-		[Embed(source="assets/rock.png")] public static const Gfx: Class;
+		[Embed(source="assets/rocks.png")] public static const Gfx: Class;
 		public function Wall (_x:int = 0, _y:int = 0)
 		{
 			x = _x * Gem.SIZE;
@@ -19,7 +19,10 @@ package
 			
 			setHitbox(Gem.SIZE, Gem.SIZE);
 			
-			graphic = new Image(Gfx);
+			var sprite:Spritemap = new Spritemap(Gfx, 8, 8);
+			sprite.frame = FP.rand(sprite.frameCount);
+			
+			graphic = sprite;
 		}
 	}
 }
