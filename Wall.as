@@ -9,6 +9,7 @@ package
 	
 	public class Wall extends Entity
 	{
+		[Embed(source="assets/rock.png")] public static const Gfx: Class;
 		public function Wall (_x:int = 0, _y:int = 0)
 		{
 			x = _x * Gem.SIZE;
@@ -18,7 +19,7 @@ package
 			
 			setHitbox(Gem.SIZE, Gem.SIZE);
 			
-			graphic = Image.createRect(width+1, height+1, 0xA7A7A7);
+			graphic = new Image(Gfx);
 		}
 	}
 }

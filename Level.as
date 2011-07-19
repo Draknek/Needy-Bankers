@@ -10,7 +10,7 @@ package
 	
 	public class Level extends World
 	{
-		//[Embed(source="images/bg.png")] public static const BgGfx: Class;
+		[Embed(source="assets/sheet-targets.png")] public static const TargetGfx: Class;
 		
 		public static const TILES_X:int = 15;
 		public static const TILES_Y:int = 12;
@@ -60,7 +60,19 @@ package
 					var id:int = data.getPixel(x, y);
 					
 					if (id == 5) add(new Wall(x,y));
-					else if (id) add(new Gem(x, y, 1, 1, id));
+					else if (id > 0 && id < 5) add(new Gem(x, y, 1, 1, id));
+					else if (id > 5 && id <= 9) {
+						var e:Entity = add(new Entity);
+						e.layer = 10;
+						
+						var s:Spritemap = new Spritemap(TargetGfx, 8, 8);
+						s.frame = id - 6;
+						
+						e.graphic = s;
+						
+						e.x = x*7;
+						e.y = y*7;
+					}
 				}
 			}
 			
@@ -133,7 +145,7 @@ package
 					dx = FP.clamp(dx, -1, 1) * Gem.SIZE;
 					dy = FP.clamp(dy, -1, 1) * Gem.SIZE;
 				
-					dragging.moveBy(dx, dy, ["gem","solid","target"], true);
+					dragging.moveBy(dx, dy, ["gem","solid"], true);
 				
 					if (Input.mouseReleased) {
 						dragging = null;
