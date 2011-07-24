@@ -24,6 +24,8 @@ package
 		
 		public var editMode:Boolean = false;
 		public static var paint:int = 0;
+		
+		public var text:Text = new Text("", -1, -2, {size:8});
 				
 		public function Level (_data:BitmapData = null)
 		{
@@ -78,10 +80,14 @@ package
 			}
 			
 			doCombine();
+			
+			addGraphic(text);
 		}
 		
 		public override function update (): void
 		{
+			text.text = "";
+			
 			if (Input.pressed(Key.R)) {
 				FP.world = new Level(data);
 				return;
@@ -106,6 +112,8 @@ package
 			Input.mouseCursor = "auto";
 			
 			if (editMode) {
+				text.text = "Edit mode";
+				
 				hovering = null;
 				dragging = null;
 				
