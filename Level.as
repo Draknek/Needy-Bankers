@@ -245,6 +245,10 @@ package
 		{
 			var out:ByteArray = new ByteArray;
 			
+			const version:int = 0;
+			
+			out.writeInt(version);
+			
 			for (var j:int = 0; j < data.height; j++) {
 				for (var i:int = 0; i < data.width; i++) {
 					out.writeInt(data.getPixel(i, j));
@@ -256,6 +260,8 @@ package
 		
 		public override function setWorldData (input: ByteArray): void {
 			removeAll();
+			
+			var version:int = input.readInt();
 			
 			for (var j:int = 0; j < data.height; j++) {
 				for (var i:int = 0; i < data.width; i++) {
