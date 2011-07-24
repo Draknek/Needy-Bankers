@@ -7,8 +7,9 @@ package
 	
 	import flash.display.*;
 	import flash.geom.*;
+	import flash.utils.*;
 	
-	public class Level extends World
+	public class Level extends LoadableWorld
 	{
 		[Embed(source="assets/sheet-targets.png")] public static const TargetGfx: Class;
 		
@@ -238,6 +239,31 @@ package
 		public override function render (): void
 		{
 			super.render();
+		}
+		
+		public override function getWorldData (): *
+		{
+			var out:ByteArray = new ByteArray;
+			
+			for (var j:int = 0; j < data.height; j++) {
+				for (var i:int = 0; i < data.width; i++) {
+					out.writeInt(data.getPixel(i, j));
+				}
+			}
+			
+			return out;
+		}
+		
+		public override function setWorldData (input: ByteArray): void {
+			removeAll();
+			
+			for (var j:int = 0; j < data.height; j++) {
+				for (var i:int = 0; i < data.width; i++) {
+					data.setPixel(i, j, input.readInt());
+				}
+			}
+			
+			reloadState();
 		}
 	}
 }
