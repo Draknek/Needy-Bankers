@@ -67,7 +67,7 @@ package
 						e.layer = 10;
 						
 						var s:Spritemap = new Spritemap(TargetGfx, 8, 8);
-						s.frame = id - 6;
+						s.frame = id - 5;
 						
 						e.graphic = s;
 						
