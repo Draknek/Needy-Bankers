@@ -59,7 +59,7 @@ package
 				for (y = 0; y < data.height; y++) {
 					var id:int = data.getPixel(x, y);
 					
-					if (id == 5) add(new Wall(x,y));
+					if (id == 5) add(new Wall(x,y, ! editMode));
 					else if (id > 0 && id < 5) add(new Gem(x, y, 1, 1, id));
 					else if (id > 5 && id <= 9) {
 						var e:Entity = add(new Entity);
@@ -89,10 +89,12 @@ package
 			if (Input.pressed(Key.E)) {
 				if (editMode) {
 					editMode = false;
+					reloadState();
 				} else {
 					var newLevel:Level = new Level(data);
 				
 					newLevel.editMode = true;
+					newLevel.reloadState();
 				
 					FP.world = newLevel;
 				}
