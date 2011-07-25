@@ -11,8 +11,6 @@ package
 	
 	public class Level extends LoadableWorld
 	{
-		[Embed(source="assets/sheet-targets.png")] public static const TargetGfx: Class;
-		
 		public static const TILES_X:int = 15;
 		public static const TILES_Y:int = 12;
 		
@@ -61,18 +59,7 @@ package
 					
 					if (id == 5) add(new Wall(x,y, ! editMode));
 					else if (id > 0 && id < 5) add(new Gem(x, y, 1, 1, id));
-					else if (id > 5 && id <= 9) {
-						var e:Entity = add(new Entity);
-						e.layer = 10;
-						
-						var s:Spritemap = new Spritemap(TargetGfx, 8, 8);
-						s.frame = id - 5;
-						
-						e.graphic = s;
-						
-						e.x = x*7;
-						e.y = y*7;
-					}
+					else if (id > 5 && id <= 9) add(new Target(x, y, id));
 				}
 			}
 			
