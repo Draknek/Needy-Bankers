@@ -22,8 +22,6 @@ def build ():
 	for level in levels:
 		filename = "levels/" + level + ".lvl"
 		
-		print filename
-		
 		filesize = os.path.getsize(filename)
 	
 		output.write(bin(filesize));
