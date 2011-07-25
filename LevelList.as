@@ -22,7 +22,7 @@ package
 			
 				data.readBytes(levelData, 0, size);
 				
-				levels[i] = levelData;
+				levels[i+1] = levelData;
 			}
 		}
 	}

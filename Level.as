@@ -31,6 +31,9 @@ package
 				
 		public function Level (_id:int = 0, _data:BitmapData = null)
 		{
+			if (_id == 0) _id = 1;
+			if (_id >= LevelList.levels.length) _id = 1;
+			
 			id = _id;
 			
 			if (_data) {
@@ -39,7 +42,7 @@ package
 			} else {
 				data = new BitmapData(TILES_X, TILES_Y, false, 0);
 				
-				setWorldData(LevelList.levels[id % LevelList.levels.length]);
+				setWorldData(LevelList.levels[id]);
 			}
 			
 			reloadState();
@@ -78,12 +81,27 @@ package
 			addGraphic(text);
 		}
 		
+		public function reset ():void
+		{
+			FP.world = new Level(id, data);
+		}
+		
+		public function nextLevel ():void
+		{
+			FP.world = new Level(id+1);
+		}
+		
 		public override function update (): void
 		{
-			text.text = "";
+			text.text = "Level " + id;
 			
 			if (Input.pressed(Key.R)) {
-				FP.world = new Level(id, data);
+				reset();
+				return;
+			}
+			
+			if (Input.pressed(Key.N)) {
+				nextLevel();
 				return;
 			}
 			
@@ -262,6 +280,8 @@ package
 		
 		public override function setWorldData (input: ByteArray): void {
 			removeAll();
+			
+			input.position = 0;
 			
 			var version:int = input.readInt();
 			
