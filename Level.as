@@ -160,6 +160,7 @@ package
 					if (Input.mouseReleased) {
 						dragging = null;
 						doCombine();
+						testComplete();
 					} 
 				}
 			
@@ -171,6 +172,31 @@ package
 				
 				super.update();
 			}
+		}
+		
+		public function testComplete ():Boolean
+		{
+			var gems:Array = [];
+			
+			getType("gem", gems);
+			
+			for each (var gem:Gem in gems) {
+				for (var i:int = 2; i < gem.width; i += Gem.SIZE) {
+					for (var j:int = 2; j < gem.height; j += Gem.SIZE) {
+						var e:Entity = collidePoint("target", gem.x + i, gem.y + j);
+						
+						if (! e) return false;
+						
+						var t:Target = e as Target;
+						
+						if (t.colorID != gem.colorID) return false;
+					}
+				}
+			}
+			
+			nextLevel();
+			
+			return true;
 		}
 		
 		public function doCombine ():void

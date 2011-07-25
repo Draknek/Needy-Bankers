@@ -11,16 +11,16 @@ package
 	{
 		[Embed(source="assets/sheet-targets.png")] public static const Gfx: Class;
 		
-		public var id:int;
+		public var colorID:int;
 		
 		public function Target (_x:int, _y:int, _id:int)
 		{
-			id = _id - 5;
+			colorID = _id - 6;
 			
 			layer = 10;
 			
 			var s:Spritemap = new Spritemap(Gfx, 8, 8);
-			s.frame = id;
+			s.frame = colorID + 1;
 			
 			graphic = s;
 			
