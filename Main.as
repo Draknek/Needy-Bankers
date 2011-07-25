@@ -10,13 +10,16 @@ package
 			
 			FP.screen.scale = 5;
 			
-			FP.world = new Level();
 			//FP.console.enable();
 		}
 		
 		public override function init (): void
 		{
 			sitelock("draknek.org");
+			
+			LevelList.load();
+			
+			FP.world = new Level;
 			
 			super.init();
 		}

@@ -26,26 +26,20 @@ package
 		public static var paint:int = 0;
 		
 		public var text:Text = new Text("", -1, -2, {size:8});
+		
+		public var id:int;
 				
-		public function Level (_data:BitmapData = null)
+		public function Level (_id:int = 0, _data:BitmapData = null)
 		{
+			id = _id;
+			
 			if (_data) {
 				data = _data;
+				reloadState();
 			} else {
 				data = new BitmapData(TILES_X, TILES_Y, false, 0);
-			
-				for (var i:int = 0; i < 100; i++) {
-					do {
-						var x:int = FP.rand(TILES_X);
-						var y:int = FP.rand(TILES_Y);
-					
-						if (data.getPixel(x, y)) continue;
-						
-						data.setPixel(x, y, FP.choose(1, 2, 3, 5));
-					
-						break;
-					} while (true);
-				}
+				
+				setWorldData(LevelList.levels[id % LevelList.levels.length]);
 			}
 			
 			reloadState();
@@ -89,7 +83,7 @@ package
 			text.text = "";
 			
 			if (Input.pressed(Key.R)) {
-				FP.world = new Level(data);
+				FP.world = new Level(id, data);
 				return;
 			}
 			
@@ -98,7 +92,7 @@ package
 					editMode = false;
 					reloadState();
 				} else {
-					var newLevel:Level = new Level(data);
+					var newLevel:Level = new Level(id, data);
 				
 					newLevel.editMode = true;
 					newLevel.reloadState();
