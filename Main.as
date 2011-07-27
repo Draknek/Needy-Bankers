@@ -21,6 +21,8 @@ package
 			
 			Audio.init(this);
 			
+			Logger.init(this);
+			
 			FP.world = new Level;
 			
 			super.init();

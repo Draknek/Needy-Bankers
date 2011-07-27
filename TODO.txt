@@ -1,5 +1,4 @@
 Improve level editor UI
 Make rocks less random on reset
 Move counter
-Playtomic
 More levels!

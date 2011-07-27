@@ -196,6 +196,8 @@ package
 			
 			nextLevel();
 			
+			Logger.endLevel(id);
+			
 			Audio.play("complete");
 			
 			return true;
@@ -312,6 +314,12 @@ package
 			}
 			
 			reloadState();
+		}
+		
+		public override function begin ():void
+		{
+			Logger.startLevel(id);
+			super.begin();
 		}
 	}
 }
