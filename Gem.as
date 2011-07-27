@@ -117,12 +117,11 @@ package
 			var level:Level = world as Level;
 			var image:Image = graphic as Image;
 			
-			if (level.dragging == this || level.hovering == this) {
-				//image.tintMode = Image.TINTING_COLORIZE;
-				//image.tinting = 0.2;
-				image.color = 0xBBBBBB;
+			if (level.dragging == this) {
+				image.color = 0xAAAAAA;
+			} else if (level.hovering == this) {
+				image.color = 0xCCCCCC;
 			} else {
-				//image.tintMode = Image.TINTING_MULTIPLY;
 				image.color = 0xFFFFFF;
 			}
 		}
