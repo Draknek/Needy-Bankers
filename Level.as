@@ -21,15 +21,19 @@ package
 		public var data:BitmapData;
 		
 		public var editMode:Boolean = false;
+		public var customLevel:Boolean = false;
 		public static var paint:int = 0;
 		
 		public var text:Text = new Text("", -1, -2, {size:8});
 		
 		public var id:int;
 				
-		public function Level (_id:int = 0, _data:BitmapData = null)
+		public function Level (_id:int = 1, _data:BitmapData = null)
 		{
-			if (_id == 0) _id = 1;
+			if (_id == 0) {
+				customLevel = true;
+			}
+			
 			if (_id >= LevelList.levels.length) _id = 1;
 			
 			id = _id;
@@ -82,14 +86,18 @@ package
 		
 		public override function update (): void
 		{
-			text.text = "Level " + id;
+			if (customLevel) {
+				text.text = "Test mode";
+			} else {
+				text.text = "Level " + id;
+			}
 			
 			if (Input.pressed(Key.R)) {
 				reset();
 				return;
 			}
 			
-			if (Input.pressed(Key.N)) {
+			if (! customLevel && Input.pressed(Key.N)) {
 				nextLevel();
 				return;
 			}
@@ -99,7 +107,7 @@ package
 					editMode = false;
 					reloadState();
 				} else {
-					var newLevel:Level = new Level(id, data);
+					var newLevel:Level = new Level(0, data);
 				
 					newLevel.editMode = true;
 					newLevel.reloadState();
@@ -196,7 +204,7 @@ package
 				}
 			}
 			
-			nextLevel();
+			if (! customLevel) nextLevel();
 			
 			Logger.endLevel(id);
 			
