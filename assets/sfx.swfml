@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<!-- Usage: swfmill simple sfx.swfml sfx.swf -->
+
+<movie width="320" height="240" framerate="12">
+	<background color="#ffffff" />
+	<frame>
+		<library>
+			<sound id="click" import="Greedy-Bankers-Sfx/click-resaved.wav" />
+			<sound id="attach" import="Greedy-Bankers-Sfx/attach1.wav" />
+			<sound id="complete" import="Greedy-Bankers-Sfx/powerup.wav" />
+		</library>
+	</frame>
+</movie>

@@ -142,12 +142,12 @@ package
 			} else {
 				hovering = collidePoint("gem", mouseX, mouseY) as Gem;
 			
-				if (Input.mousePressed || (! dragging && Input.mouseDown)) {
+				if (! dragging && hovering && Input.mouseDown) {
 					dragging = hovering;
-					if (dragging) {
-						dragPoint.x = coord(mouseX - dragging.x);
-						dragPoint.y = coord(mouseY - dragging.y);
-					}
+					dragPoint.x = coord(mouseX - dragging.x);
+					dragPoint.y = coord(mouseY - dragging.y);
+					
+					Audio.play("click");
 				} else if (dragging) {
 					var dx:int = coord(mouseX - dragPoint.x, TILES_X - dragging.width/Gem.SIZE + 1) - dragging.x;
 					var dy:int = coord(mouseY - dragPoint.y, TILES_Y - dragging.height/Gem.SIZE + 1) - dragging.y;
@@ -159,7 +159,7 @@ package
 				
 					if (Input.mouseReleased) {
 						dragging = null;
-						doCombine();
+						doCombine(true);
 						testComplete();
 					} 
 				}
@@ -196,10 +196,12 @@ package
 			
 			nextLevel();
 			
+			Audio.play("complete");
+			
 			return true;
 		}
 		
-		public function doCombine ():void
+		public function doCombine (playSfx:Boolean = false):void
 		{
 			var gem:Gem, gem2:Gem;
 			var x2:int, y2:int;
@@ -256,7 +258,12 @@ package
 				}
 			
 				updateLists();
-			} while (merged > 0)
+				
+				if (playSfx && merged > 0) {
+					Audio.play("attach");
+					playSfx = false;
+				}
+			} while (merged > 0);
 		}
 		
 		public static function coord(xy:Number, max:int = 100):int

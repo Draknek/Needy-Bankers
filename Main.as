@@ -19,6 +19,8 @@ package
 			
 			LevelList.load();
 			
+			Audio.init(this);
+			
 			FP.world = new Level;
 			
 			super.init();
