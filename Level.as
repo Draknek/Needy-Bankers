@@ -22,7 +22,11 @@ package
 		
 		public var editMode:Boolean = false;
 		public var customLevel:Boolean = false;
-		public static var paint:int = 0;
+		
+		[Embed(source="assets/editor-tiles.png")]
+		public static const EditTilesGfx: Class;
+		
+		public static var editTile:Spritemap = new Spritemap(EditTilesGfx, 8, 8);
 		
 		public var text:Text = new Text("", -1, -2, {size:8});
 		
@@ -70,6 +74,10 @@ package
 			}
 			
 			doCombine();
+			
+			if (editMode) {
+				addGraphic(editTile);
+			}
 			
 			addGraphic(text);
 		}
@@ -123,6 +131,11 @@ package
 			if (editMode) {
 				text.text = "Edit mode";
 				
+				// SPACE: Palette
+				// E: Test
+				// C: Clear
+				// 0-9: choose tile
+				
 				hovering = null;
 				dragging = null;
 				
@@ -133,18 +146,22 @@ package
 				
 				for (var i:int = 0; i < 10; i++) {
 					if (Input.pressed(Key.DIGIT_0 + i)) {
-						paint = i;
+						editTile.frame = i;
 					}
 				}
 				
+				var mx:int = mouseX / Gem.SIZE;
+				var my:int = mouseY / Gem.SIZE;
+				
+				editTile.x = mx * Gem.SIZE;
+				editTile.y = my * Gem.SIZE;
+				editTile.alpha = 0.5;
+				
 				if (Input.mouseDown) {
-					var mx:int = mouseX / Gem.SIZE;
-					var my:int = mouseY / Gem.SIZE;
-					
 					var id:int = data.getPixel(mx, my);
 					
-					if (id != paint) {
-						data.setPixel(mx, my, paint);
+					if (id != editTile.frame) {
+						data.setPixel(mx, my, editTile.frame);
 						
 						reloadState();
 					}
