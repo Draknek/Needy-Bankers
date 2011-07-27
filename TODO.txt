@@ -2,4 +2,6 @@ Visual "you are dragging this" feedback
 Sound effects
 Improve level editor UI
 Make rocks less random on reset
+Move counter
+Playtomic
 More levels!
