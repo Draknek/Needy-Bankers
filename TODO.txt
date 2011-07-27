@@ -1,4 +1,3 @@
 Improve level editor UI
-Make rocks less random on reset
 Move counter
 More levels!

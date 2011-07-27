@@ -48,6 +48,8 @@ package
 		
 		private function reloadState ():void
 		{
+			FP.randomSeed = id;
+			
 			removeAll();
 			
 			updateLists();
