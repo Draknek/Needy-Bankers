@@ -27,6 +27,9 @@ package
 		public static const EditTilesGfx: Class;
 		
 		public static var editTile:Spritemap = new Spritemap(EditTilesGfx, 8, 8);
+		public static var palette:Entity = createPalette();
+		public static var paletteClicked:Boolean = false;
+		public static var paletteMouseover:Stamp;
 		
 		public var text:Text = new Text("", -1, -2, {size:8});
 		
@@ -77,9 +80,44 @@ package
 			
 			if (editMode) {
 				addGraphic(editTile);
+				add(palette);
 			}
 			
 			addGraphic(text);
+		}
+		
+		private static function createPalette ():Entity
+		{
+			var palette:Entity = new Entity;
+			var tiles:Stamp = new Stamp(EditTilesGfx);
+			palette.width = tiles.width;
+			palette.height = tiles.height;
+			
+			palette.x = int((FP.width - palette.width)*0.5);
+			palette.y = int((FP.height - palette.height)*0.5);
+			
+			var border:Stamp = new Stamp(new BitmapData(palette.width+2, palette.height+2, false, 0xFFFFFF));
+			FP.rect.x = 1;
+			FP.rect.y = 1;
+			FP.rect.width = palette.width;
+			FP.rect.height = palette.height;
+			border.source.fillRect(FP.rect, 0x202020);
+			
+			border.x = -1;
+			border.y = -1;
+			
+			paletteMouseover = new Stamp(new BitmapData(editTile.width+2, editTile.height+2, true, 0xFFFFFFFF));
+			
+			FP.rect.width = editTile.width;
+			FP.rect.height = editTile.height;
+			paletteMouseover.source.fillRect(FP.rect, 0x0);
+			
+			paletteMouseover.x = -1;
+			paletteMouseover.y = -1;
+			
+			palette.graphic = new Graphiclist(border, tiles, paletteMouseover);
+			
+			return palette;
 		}
 		
 		public function reset ():void
@@ -131,6 +169,10 @@ package
 			if (editMode) {
 				text.text = "Edit mode";
 				
+				if (Input.pressed(Key.SPACE)) {
+					palette.visible = ! palette.visible;
+				}
+				
 				// SPACE: Palette
 				// E: Test
 				// C: Clear
@@ -153,18 +195,55 @@ package
 				var mx:int = mouseX / Gem.SIZE;
 				var my:int = mouseY / Gem.SIZE;
 				
-				editTile.x = mx * Gem.SIZE;
-				editTile.y = my * Gem.SIZE;
-				editTile.alpha = 0.5;
+				var overPalette:Boolean = palette.visible && palette.collidePoint(palette.x, palette.y, mouseX, mouseY);
+				
+				if (overPalette) {
+					editTile.alpha = 0;
+					Input.mouseCursor = "button";
+				} else {
+					editTile.x = mx * Gem.SIZE;
+					editTile.y = my * Gem.SIZE;
+					editTile.alpha = 0.5;
+				}
+				
+				if (palette.visible) {
+					if (overPalette) {
+						mx = mouseX - palette.x;
+						my = mouseY - palette.y;
+						
+						mx /= editTile.width;
+						my /= editTile.height;
+						
+						paletteMouseover.x = -1 + mx * 8;
+						paletteMouseover.y = -1 + my * 8;
+					} else {
+						paletteMouseover.x = -1 + int(editTile.frame % 5) * 8;
+						paletteMouseover.y = -1 + int(editTile.frame / 5) * 8;
+					}
+				}
 				
 				if (Input.mouseDown) {
-					var id:int = data.getPixel(mx, my);
-					
-					if (id != editTile.frame) {
-						data.setPixel(mx, my, editTile.frame);
+					if (overPalette && Input.mousePressed) {
 						
-						reloadState();
+						
+						editTile.frame = mx + (palette.width / Gem.SIZE) * my;
+						
+						paletteClicked = true;
 					}
+					
+					if (! overPalette && ! paletteClicked) {
+						var id:int = data.getPixel(mx, my);
+					
+						if (id != editTile.frame) {
+							data.setPixel(mx, my, editTile.frame);
+						
+							reloadState();
+						}
+					}
+					
+					palette.visible = false;
+				} else {
+					paletteClicked = false;
 				}
 			} else {
 				hovering = collidePoint("gem", mouseX, mouseY) as Gem;
