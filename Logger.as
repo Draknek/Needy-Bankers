@@ -30,6 +30,7 @@ package
 				Log.LevelCounterMetric("started", l(id));
 				startTime = getTimer();
 				//trace("Started level " + id + " at " + startTime);
+				currentLevel = id;
 			}
 		}
 
