@@ -1,3 +1,2 @@
-Improve level editor UI
 Move counter
 More levels!

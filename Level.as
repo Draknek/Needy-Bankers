@@ -130,6 +130,12 @@ package
 			FP.world = new Level(id+1);
 		}
 		
+		public function clear ():void
+		{
+			data.fillRect(data.rect, 0);
+			reloadState();
+		}
+		
 		public override function update (): void
 		{
 			if (customLevel) {
@@ -182,8 +188,7 @@ package
 				dragging = null;
 				
 				if (Input.pressed(Key.C)) {
-					data.fillRect(data.rect, 0);
-					reloadState();
+					clear();
 				}
 				
 				for (var i:int = 0; i < 10; i++) {
@@ -389,6 +394,29 @@ package
 			super.render();
 		}
 		
+		public function copy ():String
+		{
+			var out:ByteArray = getWorldData();
+			
+			out.compress();
+			
+			return Base64.encode(out);
+		}
+		
+		public function paste (input:String):void
+		{
+			try {
+				var bytes:ByteArray = Base64.decode(input);
+			
+				if (bytes.length) {
+					bytes.uncompress();
+					setWorldData(bytes);
+					id = 0;
+					customLevel = true;
+				}
+			} catch (e:Error) {}
+		}
+		
 		public override function getWorldData (): *
 		{
 			var out:ByteArray = new ByteArray;
@@ -412,6 +440,8 @@ package
 			input.position = 0;
 			
 			var version:int = input.readInt();
+			
+			if (version > 0) return;
 			
 			for (var j:int = 0; j < data.height; j++) {
 				for (var i:int = 0; i < data.width; i++) {

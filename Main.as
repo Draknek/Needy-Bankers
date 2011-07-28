@@ -2,6 +2,11 @@ package
 {
 	import net.flashpunk.*;
 	
+	import flash.desktop.*;
+	import flash.events.*;
+	import flash.system.*;
+	import flash.ui.*;
+	
 	public class Main extends Engine
 	{
 		public function Main () 
@@ -22,6 +27,15 @@ package
 			Audio.init(this);
 			
 			Logger.init(this);
+			
+			contextMenu.clipboardMenu = true;
+			contextMenu.clipboardItems.copy = true;
+			contextMenu.clipboardItems.paste = true;
+			contextMenu.clipboardItems.clear = true;
+
+			addEventListener(Event.COPY, copyHandler);
+			addEventListener(Event.PASTE, pasteHandler);
+			addEventListener(Event.CLEAR, clearHandler);
 			
 			FP.world = new Level;
 			
@@ -48,6 +62,35 @@ package
 			throw new Error("Error: this game is sitelocked");
 			
 			return false;
+		}
+		
+		private static function copyHandler(event:Event):void 
+		{
+			var level:Level = FP.world as Level;
+			
+			if (level) {
+				System.setClipboard(level.copy());
+			}
+		}
+		
+		private static function pasteHandler(event:Event):void 
+		{
+			var clipboard:String = Clipboard.generalClipboard.getData(ClipboardFormats.TEXT_FORMAT) as String;
+			
+			var level:Level = FP.world as Level;
+			
+			if (level) {
+				level.paste(clipboard);
+			}
+		}
+		
+		private static function clearHandler(event:Event):void 
+		{
+			var level:Level = FP.world as Level;
+			
+			if (level) {
+				level.clear();
+			}
 		}
 	}
 }
